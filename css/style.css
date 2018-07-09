@@ -1,0 +1,75 @@
+html,
+body {
+    font-family: 'Encode Sans Condensed', sans-serif;
+    font-size: 16px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-family: 'Eagle Lake', cursive;
+}
+
+.btn-primary {
+    background: rgb(13, 147, 196);
+    border: 1px solid #fff;
+    font-size: 16px;
+}
+
+.btn-primary:hover,
+.btn-primary:active,
+.btn-primary:focus {
+    border-color: #fff;
+}
+
+.sidenav {
+/*    background: rgbA(0, 82, 112, 0.7);*/
+    background: rgba(5, 98, 132, 0.8);
+    height: 100%;
+    margin-left: -350px;
+    padding: 10px;
+    position: absolute;
+    transition: all 0.2s ease-in-out;
+    width: 350px;
+    z-index: 1;
+}
+
+.sidenav.active {
+    margin-left: 0;
+    transition: all 0.2s ease-in-out;
+}
+
+#sidebarToggle {
+    margin: 10px;
+    position: fixed;
+    z-index: 10;
+    transform: translate(0, 35px);
+    transition: all 0.2s ease-in-out;
+}
+
+#sidebarToggle.open {
+    transform: translate(0, 0px);
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar-header h1 {
+    color: #fff;
+    font-size: 30px;
+    margin-top: 50px;
+}
+
+.sidebar-header {
+    border-bottom: 1px solid #fff;
+}
+
+#map, #main {
+    height: 100%;
+    width: 100%;
+}
+
+
