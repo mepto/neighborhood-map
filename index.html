@@ -9,27 +9,31 @@
 </head>
 
 <body>
-    <button  class="btn btn-primary float-left" id="sidebarToggle" data-bind="click: toggleClasses"><span class="glyphicon glyphicon-list"></span> <span data-bind="text: btnText"></span></button>
-<!--
-    <button class="btn btn-primary float-left" id="sidebarToggle">
-        <span class="glyphicon glyphicon-list"></span> <span id="sidebarButtonText">List of places</span>
-    </button>
--->
-    <div id="sidebar" class="sidenav" data-bind="css: 'active'">
+    <button class="btn btn-primary float-left" id="sidebarToggle" data-bind="click: toggleButtonText, css: toggleButtonClass"><span class="glyphicon glyphicon-list"></span> <span data-bind="text: btnText"></span></button>
+
+    <div id="sidebar" class="sidenav" data-bind="css: toggleMenuClass">
         <div class="sidebar-header">
             <h1>Strasbourg map</h1>
         </div>
-        <ul class="collapse list-unstyled">
-            <li><a href="#">Location 1</a></li>
-            <li><a href="#">Location 2</a></li>
-            <li><a href="#">Location 3</a></li>
+        <input type="text" data-bind="value: filterText, valueUpdate:'afterkeydown'" />
+        <ul class="collapse list-unstyled" data-bind="foreach: filteredLocations">
+            <li>
+                <h3><span data-bind="text: title"></span></h3>
+            </li>
         </ul>
+<!--
+        <ul data-bind="foreach: allLocations">
+            <li data-bind="text: title"></li>
+        </ul>
+-->
     </div>
     <div id="main">
         <div id="map"></div>
     </div>
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
     <script src="js/knockout.js" charset="utf-8"></script>
+    <script src="js/mapStyle.js" charset="utf-8"></script>
+    <script src="js/mapLocations.js" charset="utf-8"></script>
     <script src="js/main.js" charset="utf-8"></script>
     <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyC_S6csGCAdRjJkh1hkJlpcVScCfReTC2o&callback=initMap" onerror="alertUser('mapsLoad')"></script>
 </body>

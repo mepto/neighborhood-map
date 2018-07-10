@@ -15,15 +15,16 @@ h5 {
     font-family: 'Eagle Lake', cursive;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-primary:focus {
     background: rgb(13, 147, 196);
     border: 1px solid #fff;
     font-size: 16px;
 }
 
 .btn-primary:hover,
-.btn-primary:active,
-.btn-primary:focus {
+.btn-primary:active {
+    background: rgb(6, 115, 155);
     border-color: #fff;
 }
 
