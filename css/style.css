@@ -16,7 +16,8 @@ h5 {
 }
 
 .btn-primary,
-.btn-primary:focus {
+.btn-primary:focus,
+#locationsList li {
     background: rgb(13, 147, 196);
     border: 1px solid #fff;
     font-size: 16px;
@@ -73,4 +74,52 @@ h5 {
     width: 100%;
 }
 
+.searchArea,
+#locationsList {
+    background: rgba(5, 98, 132, 0.9);
+    border-radius: 3px;
+    margin: 15px 0;
+    padding: 5px 5px 5px 10px;
+    width: 100%;
+}
+
+.searchArea {
+    display: flex;
+}
+
+label {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 400;
+    margin-top: 5px;
+}
+
+label:focus {
+    outline: none;
+}
+
+#searchInput {
+    flex-grow: 3.5;
+}
+
+#locationsList li {
+    border-radius: 3px;
+    color: #fff;
+    cursor: pointer;
+    margin: 5px 0;
+    padding: 2px 5px;
+}
+
+#locationsList li.selectedLocation {
+    background: rgba(206, 69, 29, 1);
+    color: #fff;
+    transition: all 0.3s ease-in-out;
+}
+
+#locationsList li.selectedLocation:before {
+    content: "\f5a0";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 5px;
+    position: relative;
+}
 
