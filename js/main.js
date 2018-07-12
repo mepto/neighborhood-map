@@ -27,12 +27,14 @@
 
 
      // ---- VM for locations generation and filter ----
+     self.thisSelection = ko.observable('');
      self.locationsList = ko.observableArray([]);
      self.filterText = ko.observable('');
      self.currentSelection = ko.observable('');
      locations.forEach(function (placeLocation) {
          self.locationsList.push(new Location(placeLocation));
      });
+     //returns the list of locations or all if no filter is added
      self.filteredLocations = ko.computed(function () {
          if (!self.filterText()) {
              return self.locationsList();
@@ -40,26 +42,19 @@
              return self.locationsList().filter(location => location.title().toLowerCase().indexOf(self.filterText().toLowerCase()) > -1);
          }
      });
-     self.selectLocation = function(elem){
-//        console.log(self.currentSelection(elem.title));
+     self.selectLocation = function (elem) {
+         //toggles selection class between clickable elements
+         //if a selected element is clicked again, it's unselected.
+         if (self.thisSelection() == this.title()) {
+             self.thisSelection("");
+             self.currentSelection("");
+         } else {
+             self.currentSelection(elem.title);
+             self.thisSelection(this.title());
+         };
 
-//         var theElem = document.getElementsByClassName;
-//         console.log();
-//         if (document.getElementsByClassName('selectedLocation')[0].innerHTML == elem.title() ) {
-//             console.log("le même");
-//         } else {
-//             console.log("pas le même");
-//         }
 
-         self.currentSelection(elem.title);
-//         console.log(this.parentNode.classList);
-//         if (self.currentSelection(elem.title)) {
-//            self.currentSelection() == "";
-//         } else {
-
-//         }
-    };
-
+     }
  }
 
  ko.applyBindings(new AppVM());
@@ -87,9 +82,9 @@
 
  function alertUser(errorType) {
      switch (errorType) {
-     case 'mapsLoad':
-         console.log("There was a problem with google maps");
-         break;
+         case 'mapsLoad':
+             console.log("There was a problem with google maps");
+             break;
      }
  }
 
