@@ -12,7 +12,7 @@ h2,
 h3,
 h4,
 h5 {
-    font-family: 'Eagle Lake', cursive;
+    font-family: 'Voltaire', serif;
 }
 
 .btn-primary,
@@ -61,7 +61,7 @@ h5 {
 
 .sidebar-header h1 {
     color: #fff;
-    font-size: 30px;
+/*    font-size: 30px;*/
     margin-top: 50px;
 }
 
