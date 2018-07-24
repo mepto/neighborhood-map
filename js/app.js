@@ -13,7 +13,7 @@ var Location = function (data) {
     this.location = ko.observable(data.location);
 }
 
-// ViewModel
+// -------- ViewModel -------- //
 function ViewModel() {
 
     var self = this; // keeps the scope of 'this' where it should be
@@ -73,10 +73,7 @@ function ViewModel() {
         (typeof (elem.title) === 'function') ? thisTitle = elem.title(): thisTitle = elem.title;
         if (self.selectedLocation() == thisTitle) {
             self.selectedLocation('nothing');
-            for (var i = 0; i < markers[i].length; i++) {
-                markers[i].setAnimation(null);
-                markers[i].setIcon(defaultIcon);
-            }
+            toggleMarkerBounce(' ');
         } else {
             self.selectedLocation(thisTitle);
             toggleMarkerBounce(thisTitle);
@@ -85,7 +82,6 @@ function ViewModel() {
     };
 
     // --- make markers ---
-    //    var defaultIconColor = '#ce451d';
     var defaultIcon = makeMarkerIcon('#056284');
     var selectedIcon = makeMarkerIcon('#ce451d');
 
@@ -148,7 +144,6 @@ function ViewModel() {
 
     function clearAnimation(elem) {
         setTimeout((function () {
-                    console.log(elem);
                    elem.setAnimation(null);
                 }).bind(this), 2075);
     }
