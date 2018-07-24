@@ -109,13 +109,13 @@ label:focus {
     padding: 2px 5px;
 }
 
-#locationsList li.selectedLocation {
+#locationsList li.selectedLoc {
     background: rgba(206, 69, 29, 1);
     color: #fff;
     transition: all 0.3s ease-in-out;
 }
 
-#locationsList li.selectedLocation:before {
+#locationsList li.selectedLoc:before {
     content: "\f5a0";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;

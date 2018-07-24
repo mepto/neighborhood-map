@@ -23,8 +23,9 @@
             <input type="text" id="searchInput" data-bind="value: filterText, valueUpdate: 'keyup'" placeholder="Type a few letters to filter the list" />
         </div>
         <ul class="list-unstyled" id="locationsList" data-bind="foreach: filteredLocations">
-            <li data-bind="text: title"></li>
+            <li data-bind="text: $data.title, click: $parent.clickedLocation, css: {selectedLoc: $parent.selectedLocation() === $data.title()}" ></li>
         </ul>
+<!--        , css:{selectedLoc: $parent.selectedLocation() === this.title()}-->
 
 <!--    <button class="btn btn-primary float-left" id="sidebarToggle" data-bind="click: toggleButtonText, css: toggleButtonClass"><span class="glyphicon glyphicon-list"></span> <span data-bind="text: btnText"></span></button>-->
 
