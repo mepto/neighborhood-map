@@ -72,8 +72,11 @@ function ViewModel() {
         var thisTitle;
         (typeof (elem.title) === 'function') ? thisTitle = elem.title(): thisTitle = elem.title;
         if (self.selectedLocation() == thisTitle) {
-            removeAllSelection();
             self.selectedLocation('nothing');
+            for (var i = 0; i < markers[i].length; i++) {
+                markers[i].setAnimation(null);
+                markers[i].setIcon(defaultIcon);
+            }
         } else {
             self.selectedLocation(thisTitle);
             toggleMarkerBounce(thisTitle);
