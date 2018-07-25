@@ -20,6 +20,7 @@ h5 {
 #locationsList li {
     background: rgb(13, 147, 196);
     border: 1px solid #fff;
+    font-family: 'Encode Sans Condensed', sans-serif;
     font-size: 16px;
 }
 
@@ -122,4 +123,22 @@ label:focus {
     margin-right: 5px;
     position: relative;
 }
+
+.comment {
+    font-style: italic;
+}
+
+.infow {
+    width: 400px;
+}
+
+.left {
+    float: left;
+    margin-right: 5px;
+}
+.right {
+    float: right;
+    margin-left: 5px;
+}
+
 
