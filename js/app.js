@@ -1,21 +1,33 @@
 // global variables in use in the app
 var map;
 var markers = [];
-var activeInfoWindow;
+var latLng;
+var defaultLatLng = {
+    lat: 48.5820156,
+    lng: 7.751099
+};
+var infowindow = null;
 
 // function to iniate the app
 function initMap() {
-
+    if (!latLng) {
+        latLng = defaultLatLng;
+    }
     // instantiate the map
     map = new google.maps.Map(document.getElementById('map'), {
-        center: {
-            lat: 48.5820156,//48.5816732,
-            lng: 7.751099//7.7523954
-        },
+        center: latLng,
         zoom: 15.5,
         styles: style
     });
 
+    //if user clicks on map when infowindow is activated, close it
+    google.maps.event.addListener(map, 'click', function () {
+        infowindow.close();
+    });
+
+    infowindow = new google.maps.InfoWindow({
+        content: "awaiting content"
+    });
     ko.applyBindings(new ViewModel);
 }
 
@@ -29,9 +41,7 @@ var Location = function (data) {
 
 // -------- ViewModel -------- //
 function ViewModel() {
-
     var self = this; // keeps the scope of 'this' where it should be
-
     // ---- button and sidebar ----
     // toggle btn text, sidebar menu class
     var btnOpen = 'Show list';
@@ -60,7 +70,6 @@ function ViewModel() {
         if (!self.filterText()) {
             return self.locationsList();
         } else {
-            // TODO: add text when no result is returned
             return self.locationsList().filter(location => location.title().toLowerCase().indexOf(self.filterText().toLowerCase()) > -1);
         }
     });
@@ -68,43 +77,106 @@ function ViewModel() {
     // toggle element class
     self.selectedLocation = ko.observable('nothing');
 
-    function triggerClickedLocation(elem) {
-        self.clickedLocation(elem);
-    }
-
+    // when clicking on the list, modify selection
     self.clickedLocation = function (elem) {
-        var thisTitle;
-        (typeof (elem.title) === 'function') ? thisTitle = elem.title(): thisTitle = elem.title;
-        if (self.selectedLocation() == thisTitle) {
-            self.selectedLocation('nothing');
-            toggleMarkerBounce(' ');
-            activeInfoWindow.close();
-        } else {
-            self.selectedLocation(thisTitle);
-            toggleMarkerBounce(thisTitle);
+        for (var i = 0; i < markers.length; i++) {
+            if (elem.title() == markers[i].title) {
+                google.maps.event.trigger(markers[i], 'click');
+            }
         }
-
     };
 
     // --- make markers ---
+    makeMarkers();
     var defaultIcon = makeMarkerIcon('#056284');
     var selectedIcon = makeMarkerIcon('#ce451d');
 
-    // create array of markers on map
-    for (var i = 0; i < self.locationsList().length; i++) {
-        var marker = new google.maps.Marker({
-            position: self.locationsList()[i].location(),
-            icon: defaultIcon,
-            animation: google.maps.Animation.DROP,
-            title: self.locationsList()[i].title(),
-            id: self.locationsList()[i].venueID
-        });
-        // populate markers array
-        markers.push(marker);
-        // display marker on map
-        marker.setMap(map);
+    function makeMarkers() {
 
-        attachMarkerInfo(marker);
+        // create array of markers on map
+        for (var i = 0; i < self.locationsList().length; i++) {
+            var marker = new google.maps.Marker({
+                position: self.locationsList()[i].location(),
+                lat: self.locationsList()[i].location().lat,
+                lng: self.locationsList()[i].location().lng,
+                icon: makeMarkerIcon('#056284'),
+                animation: google.maps.Animation.DROP,
+                map: map,
+                title: self.locationsList()[i].title(),
+                id: self.locationsList()[i].venueID
+            });
+            // populate markers array
+            markers.push(marker);
+            // get foursquare infos
+            retrieveFoursquareData(marker);
+            // set marker with infowindow
+            manageMarker(marker);
+        }
+    }
+
+
+    // add the eventlistener, and closes/open infowindow, adds/remove styles on marker and list
+    function manageMarker(marker) {
+        google.maps.event.addListener(marker, 'click', function () {
+            if (self.selectedLocation() == marker.title) {
+                // removes styles and infos
+                self.selectedLocation('nothing');
+                toggleMarkerBounce(' ');
+                infowindow.close();
+                infowindow.setContent(' ');
+                // reset map display
+                map.panTo(defaultLatLng);
+                map.setZoom(15.5);
+            } else {
+                // adds styles and infos
+                self.selectedLocation(marker.title);
+                toggleMarkerBounce(self.selectedLocation());
+                infowindow.setContent(marker.infoContent);
+                infowindow.open(map, marker);
+                // centers map on marker
+                latLng = new google.maps.LatLng(marker.lat, marker.lng);
+                map.panTo(latLng);
+            }
+        });
+    }
+
+    function retrieveFoursquareData(marker) {
+        // foursquare API call
+        //        var clientID = 'HWL1W52CEGDWVX45JXHZG5OTJSFVB3EF1IATQCB2XQ5PE4RV';
+        //        var clientSecret = 'PAHJB25OAAZCXZUN00YCK3VKLYZFUIQWAKJ2U5HH4X531OAI';
+        // alternate client info
+                                var clientID = 'PZHZXA2TPWS54DET2Y2OBO1F1NWGULDIALYXGEJF4G43OCKG';
+                                var clientSecret = '0AGFZSURTJRGO0DNVMV4OIRXM2CI54TJMSCCGMNBUTFWGCYX';
+        var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + marker.id + '?&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20180726';
+        var myHeaders = new Headers();
+        var myInit = {
+            method: 'get',
+            headers: myHeaders,
+            mode: 'cors',
+            cache: 'default'
+        };
+
+        // Call fetch function passing the API url as parameter to retrieve the data
+        fetch(foursquareUrl, myInit)
+            .then(function (response) {
+                // if a response is given, transforms it to json
+                if (response.ok) {
+                    return response.json();
+                }
+            })
+            .then(function (result) {
+            // uses the foursquare json info to populate variables
+                var canonicalUrl = result.response.venue.canonicalUrl;
+                //combine prefix, size, suffix for photo
+                var bestphotoSrc = result.response.venue.bestPhoto.prefix + 'width200' + result.response.venue.bestPhoto.suffix;
+                var tip = result.response.venue.tips.groups[0].items[0].text;
+                var rating = result.response.venue.rating;
+                marker.infoContent = '<div class="infow"><img class="left" src="' + bestphotoSrc + '"><h4>' + marker.title + '</h4><p><strong>User review:</strong> "<span class="comment">' + tip + '</span>"</p><p><strong>Average rating:</strong> ' + rating + '</p><a class="right btn btn-primary" href="' + canonicalUrl + '" target="_blank">View on Foursquare</a></div>';
+            })
+            .catch(function () {
+                infowindow.setContent('Data from Foursquare is unavailable. Please try again later.');
+                alertUser('foursquare');
+            });
     }
 
     // marker icon svg path and info
@@ -120,60 +192,6 @@ function ViewModel() {
         return markerIcon;
     }
 
-    function attachMarkerInfo(marker) {
-        // foursquare API call
-            var clientID = 'HWL1W52CEGDWVX45JXHZG5OTJSFVB3EF1IATQCB2XQ5PE4RV';
-            var clientSecret = 'PAHJB25OAAZCXZUN00YCK3VKLYZFUIQWAKJ2U5HH4X531OAI';
-
-
-
-        var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + marker.id + '?&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20180724';
-        var myHeaders = new Headers();
-        var myInit = {
-            method: 'get',
-            headers: myHeaders,
-            mode: 'cors',
-            cache: 'default'
-        };
-        fetch(foursquareUrl, myInit) // Call fetch function passing the API url as parameter
-            .then(function (response) {
-                // Your code for handling the data you get from the API
-                if (response.ok) {
-                    return response.json();
-                }
-            })
-            .then(function (result) {
-//                console.log(result);
-                var canonicalUrl = result.response.venue.canonicalUrl;
-                //combine prefix, size, suffix for photo
-                var bestphotoSrc = result.response.venue.bestPhoto.prefix + 'width200' + result.response.venue.bestPhoto.suffix;
-                var tip = result.response.venue.tips.groups[0].items[0].text;
-                var rating = result.response.venue.rating;
-
-                var infowindow = new google.maps.InfoWindow({
-                    content: '<div class="infow"><img class="left" src="' + bestphotoSrc + '"><h4>' + marker.title + '</h4><p><strong>User review:</strong> "<span class="comment">' + tip + '</span>"</p><p><strong>Rating:</strong> ' + rating + '</p><a class="right btn btn-primary" href="' + canonicalUrl + '" target="_blank">View on Foursquare</a></div>'
-                });
-
-
-                marker.addListener('click', function () {
-                    if (activeInfoWindow) {
-                        activeInfoWindow.close();
-                    }
-                    infowindow.open(marker.get('map'), marker);
-                    activeInfoWindow = infowindow;
-                    triggerClickedLocation(marker);
-                });
-
-
-
-            })
-            .catch(function () {
-                // This is where you run code if the server returns any errors
-                alertUser('foursquare');
-            });
-
-    }
-
     // changes the marker's color
     function toggleMarkerBounce(m) {
         for (var i = 0; i < markers.length; i++) {
@@ -187,7 +205,7 @@ function ViewModel() {
             }
         }
     }
-
+    // ends marker bounce after a few iterations
     function clearAnimation(elem) {
         setTimeout((function () {
             elem.setAnimation(null);
@@ -196,6 +214,7 @@ function ViewModel() {
 
 }
 
+// gives information to the user when API data can't be accessed
 function alertUser(errorType) {
     switch (errorType) {
         case 'mapsLoad':
@@ -203,7 +222,6 @@ function alertUser(errorType) {
             break;
         case 'foursquare':
             alert("We have a problem retrieving the data from foursquare.");
-        default:
-            alert("Oops, something went wrong!");
+            break;
     }
 }
