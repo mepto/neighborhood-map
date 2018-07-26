@@ -145,8 +145,8 @@ function ViewModel() {
         //        var clientID = 'HWL1W52CEGDWVX45JXHZG5OTJSFVB3EF1IATQCB2XQ5PE4RV';
         //        var clientSecret = 'PAHJB25OAAZCXZUN00YCK3VKLYZFUIQWAKJ2U5HH4X531OAI';
         // alternate client info
-                                var clientID = 'PZHZXA2TPWS54DET2Y2OBO1F1NWGULDIALYXGEJF4G43OCKG';
-                                var clientSecret = '0AGFZSURTJRGO0DNVMV4OIRXM2CI54TJMSCCGMNBUTFWGCYX';
+        var clientID = 'PZHZXA2TPWS54DET2Y2OBO1F1NWGULDIALYXGEJF4G43OCKG';
+        var clientSecret = '0AGFZSURTJRGO0DNVMV4OIRXM2CI54TJMSCCGMNBUTFWGCYX';
         var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + marker.id + '?&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20180726';
         var myHeaders = new Headers();
         var myInit = {
@@ -165,7 +165,7 @@ function ViewModel() {
                 }
             })
             .then(function (result) {
-            // uses the foursquare json info to populate variables
+                // uses the foursquare json info to populate variables
                 var canonicalUrl = result.response.venue.canonicalUrl;
                 //combine prefix, size, suffix for photo
                 var bestphotoSrc = result.response.venue.bestPhoto.prefix + 'width200' + result.response.venue.bestPhoto.suffix;

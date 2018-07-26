@@ -7,8 +7,6 @@
     <link href="https://fonts.googleapis.com/css?family=Voltaire|Encode+Sans+Condensed" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous">
     <link href="css/style.css" rel="stylesheet">
-
-
 </head>
 
 <body>
@@ -16,7 +14,7 @@
 
     <div id="sidebar" class="sidenav" data-bind="css: {active: openClass() == true}">
         <div class="sidebar-header">
-            <h1>Strasbourg map</h1>
+            <h1>Strasbourg locations</h1>
         </div>
         <div class="searchArea">
             <label for="searchInput"><i class="glyphicon glyphicon-search"></i> Filter list: &nbsp;</label>
@@ -25,37 +23,15 @@
         <ul class="list-unstyled" id="locationsList" data-bind="foreach: filteredLocations">
             <li data-bind="text: $data.title, click: $parent.clickedLocation, css: {selectedLoc: $parent.selectedLocation() === $data.title()}" ></li>
         </ul>
-<!--        , css:{selectedLoc: $parent.selectedLocation() === this.title()}-->
-
-<!--    <button class="btn btn-primary float-left" id="sidebarToggle" data-bind="click: toggleButtonText, css: toggleButtonClass"><span class="glyphicon glyphicon-list"></span> <span data-bind="text: btnText"></span></button>-->
-
-<!--
-    <div id="sidebar" class="sidenav" data-bind="css: toggleMenuClass">
-        <div class="sidebar-header">
-            <h1>Strasbourg map</h1>
-        </div>
-        <div class="searchArea">
-            <label for="searchInput"><i class="glyphicon glyphicon-search"></i> Filter list: &nbsp;</label>
-            <input type="text" id="searchInput" data-bind="value: filterText, valueUpdate: 'keyup'" placeholder="Type a few letters to filter the list" />
-        </div>
-        <ul class="list-unstyled" id="locationsList" data-bind="foreach: filteredLocations">
-            <li data-bind="text: title, click: $parent.selectLocation, css: toggleClass"></li>
-            <li data-bind="text: title, click: $parent.selectLocation, css: {'selectedLocation' : title == $parent.currentSelection()}"></li>
-        </ul>
--->
     </div>
     <div id="main">
         <div id="map"></div>
     </div>
-    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>-->
     <script async defer src="js/knockout.js" charset="utf-8"></script>
     <script src="js/mapStyles.js" charset="utf-8"></script>
     <script src="js/mapLocations.js" charset="utf-8"></script>
     <script async defer src="js/app.js" charset="utf-8"></script>
-<!--    <script async defer src="js/main.js" charset="utf-8"></script>-->
     <script async defer src="https://maps.googleapis.com/maps/api/js?libraries=places,geometry,drawing&key=AIzaSyC_S6csGCAdRjJkh1hkJlpcVScCfReTC2o&callback=initMap" onerror="alertUser('mapsLoad')"></script>
-
-
 </body>
 
 </html>
