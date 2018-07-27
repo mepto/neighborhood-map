@@ -124,8 +124,6 @@ function ViewModel() {
         }
         for (var i = 0; i < filteredList.length; i++) {
             for (var j = 0; j < markers.length; j++) {
-                console.log(filteredList[i].venueID);
-                console.log(markers[j].id);
                 if (filteredList[i].venueID == markers[j].id) {
                     markers[j].setVisible(true);
                 }
