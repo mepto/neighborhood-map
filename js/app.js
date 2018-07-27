@@ -68,9 +68,12 @@ function ViewModel() {
     self.filterText = ko.observable('');
     self.filteredLocations = ko.computed(function () {
         if (!self.filterText()) {
+            setMarkerVisibility(self.locationsList())
             return self.locationsList();
         } else {
-            return self.locationsList().filter(location => location.title().toLowerCase().indexOf(self.filterText().toLowerCase()) > -1);
+            var filteredList = self.locationsList().filter(location => location.title().toLowerCase().indexOf(self.filterText().toLowerCase()) > -1);
+            setMarkerVisibility(filteredList)
+            return filteredList;
         }
     });
 
@@ -105,6 +108,7 @@ function ViewModel() {
                 title: self.locationsList()[i].title(),
                 id: self.locationsList()[i].venueID
             });
+
             // populate markers array
             markers.push(marker);
             // get foursquare infos
@@ -114,6 +118,20 @@ function ViewModel() {
         }
     }
 
+    function setMarkerVisibility(filteredList) {
+        for (var i = 0; i < markers.length; i++) {
+            markers[i].setVisible(false);
+        }
+        for (var i = 0; i < filteredList.length; i++) {
+            for (var j = 0; j < markers.length; j++) {
+                console.log(filteredList[i].venueID);
+                console.log(markers[j].id);
+                if (filteredList[i].venueID == markers[j].id) {
+                    markers[j].setVisible(true);
+                }
+            }
+        }
+    }
 
     // add the eventlistener, and closes/open infowindow, adds/remove styles on marker and list
     function manageMarker(marker) {
@@ -142,11 +160,11 @@ function ViewModel() {
 
     function retrieveFoursquareData(marker) {
         // foursquare API call
-        //        var clientID = 'HWL1W52CEGDWVX45JXHZG5OTJSFVB3EF1IATQCB2XQ5PE4RV';
-        //        var clientSecret = 'PAHJB25OAAZCXZUN00YCK3VKLYZFUIQWAKJ2U5HH4X531OAI';
+        var clientID = 'HWL1W52CEGDWVX45JXHZG5OTJSFVB3EF1IATQCB2XQ5PE4RV';
+        var clientSecret = 'PAHJB25OAAZCXZUN00YCK3VKLYZFUIQWAKJ2U5HH4X531OAI';
         // alternate client info
-        var clientID = 'PZHZXA2TPWS54DET2Y2OBO1F1NWGULDIALYXGEJF4G43OCKG';
-        var clientSecret = '0AGFZSURTJRGO0DNVMV4OIRXM2CI54TJMSCCGMNBUTFWGCYX';
+        //        var clientID = 'PZHZXA2TPWS54DET2Y2OBO1F1NWGULDIALYXGEJF4G43OCKG';
+        //        var clientSecret = '0AGFZSURTJRGO0DNVMV4OIRXM2CI54TJMSCCGMNBUTFWGCYX';
         var foursquareUrl = 'https://api.foursquare.com/v2/venues/' + marker.id + '?&client_id=' + clientID + '&client_secret=' + clientSecret + '&v=20180726';
         var myHeaders = new Headers();
         var myInit = {
